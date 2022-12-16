@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken'
 
 //Registering a new User
 export const registerUser = async (req, res) => {
+         
     const { firstname, lastname, email, password } = req.body;
 
     const salt = await bcrypt.genSalt(10)
@@ -26,7 +27,7 @@ export const registerUser = async (req, res) => {
         }, process.env.JWT_KEY, { expiresIn: '1h' })
 
 
-        res.status(200).json(user, token)
+        res.status(200).json({ user, token })
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
@@ -35,6 +36,7 @@ export const registerUser = async (req, res) => {
 
 //Login User
 export const loginUser = async (req, res) => {
+
     const { email, password } = req.body
     try {
         const user = await UserModel.findOne({ email: email })
@@ -47,7 +49,8 @@ export const loginUser = async (req, res) => {
                 const token = jwt.sign({
                     username: user.username, id: user._id
                 }, process.env.JWT_KEY, { expiresIn: '1h' })
-                res.status(200).json(user,token)
+                // console.log(user, token);
+                res.status(200).json({ user, token })
             }
         }
         else {
