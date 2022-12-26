@@ -7,9 +7,13 @@ const UserSchema = mongoose.Schema(
             required: true
         },
         lastname: {
-            type: String,
+            type: String
 
         },
+        username: {
+            type: String
+        },
+
         email: {
             type: String,
             required: true
@@ -17,7 +21,10 @@ const UserSchema = mongoose.Schema(
        
         password: {
             type: String,
-            required: true
+            required:true
+        },
+        email_verified:{
+            type:Boolean
         },
         isAdmin: {
             type: Boolean,
