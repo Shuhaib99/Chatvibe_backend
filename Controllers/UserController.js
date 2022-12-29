@@ -3,14 +3,13 @@ import UserModel from "../Models/userModel.js";
 
 //get a user
 export const getUser = async (req, res) => {
-    console.log(req.params.id,"getuser");
     const id = req.params.id;
 
     try {
         const user = await UserModel.findById(id)
         if (user) {
             const { password, ...otherDetails } = user._doc
-            res.status(200).json(otherDetails)
+            res.status(200).json({ otherDetails, userid: req.userid })
         }
         else {
             res.status(404).json("No such User Exist")
@@ -21,26 +20,27 @@ export const getUser = async (req, res) => {
     }
 }
 
-export const followUser=async(req,res)=>{
-    const id=req.params.id
-    const userid=req.userid
+export const followUser = async (req, res, next) => {
+    console.log(req.body.id, "Followwww");
+    const id = req.body.id
+    const userid = req.userid
 
-    if(userid===id){
+    if (userid === id) {
         res.status(403).json("Action forbidden")
-    }else{
+    } else {
         try {
             const followUser = await UserModel.findById(id)
-            const followingUser= await UserModel.findById(userid)
+            const followingUser = await UserModel.findById(userid)
 
-            if(!followUser.followers.includes(userid)){
-                await followUser.updateOne({$push : {followers : userid}})
-                await followingUser.updateOne({$push : {following : id}})
+            if (!followUser.followers.includes(userid)) {
+                await followUser.updateOne({ $push: { followers: userid } })
+                await followingUser.updateOne({ $push: { following: id } })
                 res.status(200).json("User followed")
-            }else{
+            } else {
                 res.status(403).json("User is Already followed you")
             }
 
-        }catch(error){
+        } catch (error) {
             res.status(500).json(error)
         }
     }
@@ -48,8 +48,9 @@ export const followUser=async(req,res)=>{
 }
 
 
-export const unFollowUser=async(req,res)=>{
-    const id=req.params.id
+export const unFollowUser = async (req, res, next) => {
+    console.log(req.body.id, "UnFollowwww");
+    const id=req.body.id
     const userid=req.userid
 
     if(userid===id){
