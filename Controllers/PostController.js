@@ -28,7 +28,8 @@ export const imagePost = async (req, res, next) => {
 export const getPosts = async (req, res, next) => {
     console.log("Posts time begin");
     try {
-        const posts = await ImagePostModel.find().populate("userid", "-password").sort({ createdAt: -1 })
+        const posts = await ImagePostModel.find().populate("userid", "-password").populate("comments.commentby","-password").sort({ createdAt: -1 })
+        console.log(posts,"postttttttt");
         if (posts) {
             // posts.userid=req.userid
             // console.log(posts.userid,"lklkljfdshjdhfdklsjfkldsjfdklsfjkld")
@@ -70,21 +71,14 @@ export const likePost = async (req, res, next) => {
 }
 
 export const commentPost = async (req, res, next) => {
-    console.log(req.body, Date.now(), "postDet");
     const postid = mongoose.Types.ObjectId(req.body.id)
     let user = req.userid
-    console.log(user, "userrrrrtt");
-    const comment = {
-        userid:user,
-        date: Date.now(),
-        comment: req.body.commentText
-    }
+
+    const userid = user
+    const comment = req.body.commentText
     try {
-        // const postDet = await ImagePostModel.findById(postid)
-        // if (postDet) {
-        await ImagePostModel.updateOne({ _id: postid }, { $push: { commentby: comment } })
-        res.json({status:true })
-        // }
+        await ImagePostModel.updateOne({ _id: postid }, { $push: { comments: { comment: comment, commentby: userid, createdAt: new Date() } } })
+        res.json({ status: true })
     } catch (error) {
         console.log(error);
         res.status(500).json(error)
@@ -111,3 +105,18 @@ export const getPostsById = async (req, res, next) => {
         res.status(500).json({ message: error.message })
     }
 }
+
+// export const getComment = () => async (req, res, next) => {
+//     postid = req.params.postid
+//     userid = req.userid
+
+//     try {
+//         const comments = await ImagePostModel.findOne({ _id: postid },{comments:1}).populate("users")
+//         console.log(comments,"Comments");
+//         res.json({ comments: comments.commentby })
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json(error)
+
+//     }
+// }

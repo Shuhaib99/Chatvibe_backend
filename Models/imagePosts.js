@@ -4,7 +4,7 @@ const ImagePostSchema = mongoose.Schema(
     {
         userid: {
             type: mongoose.Schema.Types.ObjectId,
-            ref:"users",
+            ref: "users",
             required: true
         },
         images: {
@@ -17,9 +17,20 @@ const ImagePostSchema = mongoose.Schema(
             type: String
         },
 
-        commentby: {
-            type: Array
-        },
+        comments: [{
+            comment: {
+                type: String
+            },
+            commentby:
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "users"
+            },
+            createdAt:
+            {
+                type: Date
+            }
+        }],
         likes: {
             type: Array
         },
