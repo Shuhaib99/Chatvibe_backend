@@ -20,8 +20,27 @@ export const getUser = async (req, res) => {
     }
 }
 
+
+export const getCurrentUserByID = async (req, res, next) => {
+    console.log("looking for response from current user");
+    try {
+        const userid = req.userid
+
+        const user = await UserModel.findById(userid)
+        if (user)
+            res.status(200).json({ user })
+        else
+            res.status(404).json("No User Exist")
+
+
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+
 export const followUser = async (req, res, next) => {
-    console.log(req.body.id, "Followwww");
+    //console.log(req.body.id, "Followwww");
     const id = req.body.id
     const userid = req.userid
 
@@ -49,26 +68,26 @@ export const followUser = async (req, res, next) => {
 
 
 export const unFollowUser = async (req, res, next) => {
-    console.log(req.body.id, "UnFollowwww");
-    const id=req.body.id
-    const userid=req.userid
+    //console.log(req.body.id, "UnFollowwww");
+    const id = req.body.id
+    const userid = req.userid
 
-    if(userid===id){
+    if (userid === id) {
         res.status(403).json("Action forbidden")
-    }else{
+    } else {
         try {
             const followUser = await UserModel.findById(id)
-            const followingUser= await UserModel.findById(userid)
+            const followingUser = await UserModel.findById(userid)
 
-            if(followUser.followers.includes(userid)){
-                await followUser.updateOne({$pull : {followers : userid}})
-                await followingUser.updateOne({$pull : {following : id}})
+            if (followUser.followers.includes(userid)) {
+                await followUser.updateOne({ $pull: { followers: userid } })
+                await followingUser.updateOne({ $pull: { following: id } })
                 res.status(200).json("User unfollowed")
-            }else{
+            } else {
                 res.status(403).json("User is not followed you")
             }
 
-        }catch(error){
+        } catch (error) {
             res.status(500).json(error)
         }
     }
@@ -76,4 +95,21 @@ export const unFollowUser = async (req, res, next) => {
 }
 
 
+export const updateUserProfile = async (req, res, next) => {
+    try {
+        console.log(req.body);
+        const userid = req.userid
+        if (req?.body?.profileImg?.option === "coverimage") {
+            await UserModel.updateOne({ _id: userid }, { coverpic: req?.body?.profileImg?.image, coverpicPubID: req?.body?.profileImg?.imagePID })
+        }
+        else if (req?.body?.profileImg.option == "avatar") {
+            console.log("inside avatar");
+            await UserModel.updateOne({ _id: userid }, { profilepic: req.body.profileImg.image, profilepicPubID: req.body.profileImg.imagePID })
+        }
+        else console.log("Invalid data");
+        res.status(200).json("Profile uploaded")
 
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}

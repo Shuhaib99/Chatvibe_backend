@@ -6,10 +6,12 @@ const UserSchema = mongoose.Schema(
             type: String,
             required: true
         },
+
         lastname: {
             type: String
 
         },
+
         username: {
             type: String
         },
@@ -23,19 +25,22 @@ const UserSchema = mongoose.Schema(
             type: String,
             required:true
         },
+
         email_verified:{
             type:Boolean
         },
+
         isAdmin: {
             type: Boolean,
             default: false
         },
-        profilePicture: String,
-        coverPicture: String,
+
+        profilepic: String,
+        profilepicPubID:String,
+        coverpic: String,
+        coverpicPubID:String,
         about: String,
-        livesIn: String,
-        worksAt: String,
-        relationship: String,
+        city: String,
         followers: [],
         following: []
     },

@@ -29,7 +29,7 @@ export const getPosts = async (req, res, next) => {
     console.log("Posts time begin");
     try {
         const posts = await ImagePostModel.find().populate("userid", "-password").populate("comments.commentby","-password").sort({ createdAt: -1 })
-        console.log(posts,"postttttttt");
+        //console.log(posts,"postttttttt");
         if (posts) {
             // posts.userid=req.userid
             // console.log(posts.userid,"lklkljfdshjdhfdklsjfkldsjfdklsfjkld")
@@ -88,13 +88,13 @@ export const commentPost = async (req, res, next) => {
 
 export const getPostsById = async (req, res, next) => {
 
-    const userid = req.params.id
+    const userid =mongoose.Types.ObjectId( req.params.id)
     console.log(userid, "PostsById time begin");
     try {
-        const posts = await ImagePostModel.findById(userid)
+        const posts = await ImagePostModel.findById({userid})
         if (posts) {
             // posts.userid=req.userid
-            console.log(posts.userid, "success")
+            console.log(posts,"success")
             res.status(200).json({ posts, userid: req.userid })
         }
         else {
