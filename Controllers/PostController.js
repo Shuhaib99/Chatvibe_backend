@@ -88,10 +88,13 @@ export const commentPost = async (req, res, next) => {
 
 export const getPostsById = async (req, res, next) => {
 
-    const userid =mongoose.Types.ObjectId( req.params.id)
-    console.log(userid, "PostsById time begin");
+    const userid =mongoose.Types.ObjectId(req.params.id)
+    // console.log(userid, "PostsById time begin");
     try {
-        const posts = await ImagePostModel.findById({userid})
+        const posts = await ImagePostModel.find({userid:userid}).
+        populate("userid", "-password").populate("comments.commentby","-password").sort({ createdAt: -1 })
+        //const posts = await ImagePostModel.find({userid:userid})
+        console.log(posts,userid,"post just ow");
         if (posts) {
             // posts.userid=req.userid
             console.log(posts,"success")

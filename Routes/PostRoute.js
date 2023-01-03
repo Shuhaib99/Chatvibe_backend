@@ -8,6 +8,6 @@ router.post('/imagePost', verifyToken, imagePost)
 router.get('/getPosts', verifyToken, getPosts)
 router.post('/likes',verifyToken,likePost)
 router.post('/commentPost',verifyToken,commentPost)
-router.get('/getPostsByID/:id', verifyToken, getPostsById)
+router.get('/getPostsByID/:id', getPostsById)
 // router.post('')
 export default router;  

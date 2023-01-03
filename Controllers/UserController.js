@@ -21,6 +21,7 @@ export const getUser = async (req, res) => {
 }
 
 
+
 export const getCurrentUserByID = async (req, res, next) => {
     console.log("looking for response from current user");
     try {
@@ -92,6 +93,34 @@ export const unFollowUser = async (req, res, next) => {
         }
     }
 
+}
+
+export const getFollowers = async (req, res, next) => {
+    try {
+        
+        const followers = await UserModel.find({ _id: req.params.id }).populate("followers", "-password").sort({ createdAt: -1 })
+        if (followers) {
+            res.status(200).json({ followers })
+        }else{
+            res.status(403).json("No such followers")
+        }
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+export const getFollowingUser = async (req, res, next) => {
+    try {
+        
+        const following = await UserModel.find({ _id: req.params.id }).populate("following", "-password").sort({ createdAt: -1 })
+        if (following) {
+            res.status(200).json({ following })
+        }else{
+            res.status(403).json("No such following users")
+        }
+    } catch (error) {
+        res.status(500).json(error)
+    }
 }
 
 
