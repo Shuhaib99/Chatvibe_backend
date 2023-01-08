@@ -4,7 +4,7 @@ import verifyToken from "../Middleware/authMiddleware.js";
 
 const router = express.Router()
 
-router.post('/', createChat)
+router.post('/',verifyToken, createChat)
 router.get('/userChats', verifyToken, userChats)
 router.get('/find/:firstid/:secondid', verifyToken, findChat)
 

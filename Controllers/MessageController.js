@@ -19,12 +19,13 @@ export const addMessage = async(req,res,next) => {
 
 
 export const getMessages = async(req,res,next)=>{
-    const {chatid}=req.params
+   
     try
     {
-     const result = await MessageModel.find({chatid})   
+     const result = await MessageModel.find(req.params)   
+     res.status(200).json(result)
     }catch (error) {
         res.status(500).json(error)
-        res.status(200).json(result)
+       
     }
 }
