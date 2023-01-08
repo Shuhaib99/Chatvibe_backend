@@ -28,7 +28,7 @@ export const imagePost = async (req, res, next) => {
 export const getPosts = async (req, res, next) => {
     console.log("Posts time begin");
     try {
-        const posts = await ImagePostModel.find().populate("userid", "-password").populate("comments.commentby","-password").sort({ createdAt: -1 })
+        const posts = await ImagePostModel.find().populate("userid", "-password").populate("comments.commentby", "-password").sort({ createdAt: -1 })
         //console.log(posts,"postttttttt");
         if (posts) {
             // posts.userid=req.userid
@@ -88,16 +88,16 @@ export const commentPost = async (req, res, next) => {
 
 export const getPostsById = async (req, res, next) => {
 
-    const userid =mongoose.Types.ObjectId(req.params.id)
+    const userid = mongoose.Types.ObjectId(req.params.id)
     // console.log(userid, "PostsById time begin");
     try {
-        const posts = await ImagePostModel.find({userid:userid}).
-        populate("userid", "-password").populate("comments.commentby","-password").sort({ createdAt: -1 })
+        const posts = await ImagePostModel.find({ userid: userid }).
+            populate("userid", "-password").populate("comments.commentby", "-password").sort({ createdAt: -1 })
         //const posts = await ImagePostModel.find({userid:userid})
-        console.log(posts,userid,"post just ow");
+        console.log(posts, userid, "post just ow");
         if (posts) {
             // posts.userid=req.userid
-            console.log(posts,"success")
+            console.log(posts, "success")
             res.status(200).json({ posts, userid: req.userid })
         }
         else {
@@ -123,3 +123,17 @@ export const getPostsById = async (req, res, next) => {
 
 //     }
 // }
+
+export const deletePost = async (req,res,next) => {
+    console.log(req.body.postid,"deletion");
+    try {
+        return new Promise(async (resolve, reject) => {
+            await ImagePostModel.deleteOne({ _id: mongoose.Types.ObjectId(req.body.postid.postid) })
+            resolve({status : true})
+        })
+
+
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}

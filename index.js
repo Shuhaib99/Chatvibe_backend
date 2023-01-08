@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 import AuthRoute from './Routes/AuthRoute.js'
 import UserRoute from './Routes/UserRoute.js'
 import PostRoute from './Routes/PostRoute.js'
+import ChatRoute from './Routes/ChatRoute.js'
+import MessageRoute from './Routes/MessageRoute.js'
 import cors from 'cors'
 import morgan from 'morgan'
 
@@ -27,3 +29,5 @@ mongoose.connect(process.env.MONGO_DB,{useNewUrlParser: true , useUnifiedTopolog
 app.use('/auth',AuthRoute)
 app.use('/user', UserRoute)
 app.use('/posts',PostRoute)
+app.use('/chat',ChatRoute)
+app.use('/message',MessageRoute)
