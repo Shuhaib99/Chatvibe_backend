@@ -1,38 +1,63 @@
 import UserModel from "../Models/userModel.js";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { sendOtp } from "../Services/userOtpService.js";
+
+
 
 
 
 //Registering a new User
-export const registerUser = async (req, res) => {
+export const OtpVerification = async (req, res) => {
+    const user = await UserModel.findOne({ email: req.body.email })
+    if (!user) {
 
-    const { firstname, lastname, email, password } = req.body;
-
-    const salt = await bcrypt.genSalt(10)
-    const hashePass = await bcrypt.hash(password, salt)
-
-    const newUser = new UserModel({
-        firstname,
-        lastname,
-        email,
-        password: hashePass
-    })
-
-    try {
-        const user = await newUser.save()
-
-        const token = jwt.sign({
-            username: user.email, id: user._id
-        }, process.env.JWT_KEY, { expiresIn: '23h' })
-
-
-        res.status(200).json({ user, token })
-    } catch (error) {
-        res.status(500).json({ message: error.message })
+        sendOtp(req.body.email)
+            .then((response) => {
+                res
+                    .status(200)
+                    .json({ message: "OTP sent", response: response, success: true });
+            })
+            .catch((err) => console.log("ERROR", err));
+    } else {
+        res.status(200).json({ user: false })
     }
 
 }
+
+export const registerUser = async (req, res) => {
+    const user = await UserModel.findOne({ email: req.body.email })
+    if (!user) {
+        const { firstname, lastname, email, password } = req.body;
+
+        const salt = await bcrypt.genSalt(10)
+        const hashePass = await bcrypt.hash(password, salt)
+
+        const newUser = new UserModel({
+            firstname,
+            lastname,
+            email,
+            password: hashePass
+        })
+
+        try {
+            const user = await newUser.save()
+
+            const token = jwt.sign({
+                username: user.email, id: user._id
+            }, process.env.JWT_KEY, { expiresIn: '23h' })
+
+
+            res.status(200).json({ user, token })
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+    } else {
+        res.status(200).json({ user: false })
+    }
+
+}
+
 
 //Login User
 export const loginUser = async (req, res) => {
@@ -58,7 +83,7 @@ export const loginUser = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ message: error.message }, "error on req.body in loginUser AuthController")
-    } 
+    }
 }
 
 
@@ -66,12 +91,12 @@ export const loginUser = async (req, res) => {
 //..............Gooooogle....................
 
 
-export const googleuser = async (req, res,next) => {
+export const googleuser = async (req, res, next) => {
     //console.log(req.body);
     console.log("it is the backend of google login ")
     const email = req.body.email
     try {
-        const User = await UserModel.findOne({ email: email })
+        const User = await UserModel.find({ email: email })
         if (User) {
             console.log("user already exist")
             const token = jwt.sign({
@@ -88,7 +113,7 @@ export const googleuser = async (req, res,next) => {
                 username: req.body.name,
                 email: req.body.email,
                 email_verified: req.body.email_verified,
-                password:"google"
+                password: "google"
             }).save()
             const token = jwt.sign({
                 username: User.email, id: User._id
@@ -96,6 +121,9 @@ export const googleuser = async (req, res,next) => {
                 process.env.JWT_KEY, { expiresIn: "23h" })
             res.status(200).json({ User, token })
         }
+        //  else {
+        //     res.status(200).json({ user: false })
+        // }
 
     } catch (error) {
         res.status(500).json({ message: error.message })
