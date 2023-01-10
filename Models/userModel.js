@@ -52,7 +52,7 @@ const UserSchema = mongoose.Schema(
         }],
         savedposts: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: "users"
+            ref: "imageposts"
         }]
     },
     { timestamps: true }

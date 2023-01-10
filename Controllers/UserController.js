@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import UserModel from "../Models/userModel.js";
 
 
@@ -146,17 +147,32 @@ export const updateUserProfile = async (req, res, next) => {
 
 export const savePosts = async (req, res, next) => {
 
-    //     const id = req.body.postid
-    //     // const userid = req.userid
+    const postid = mongoose.Types.ObjectId(req.body.postid)
+    const userid = req.userid
+    try {
+        const user = await UserModel.findById(userid)
+        if (!user.savedposts.includes(postid)) {
+            await user.updateOne({ $push: { savedposts: postid } })
+            res.status(200).json({success:"Successfully added" })
+        }else{
+            res.status(200).json({success:"Posts exist"})
+        }
 
-    //     try {
-    //         const post = await UserModel.updateOne({
-    //             savedposts:[{$in:{id}},{
-    //                 savedposts:[{$push:{id}}]
-    //             }]
-    //         })
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
 
-    //     } catch (error) {
-    //         res.status(500).json(error)
-    //     }
+export const getSavedPosts = async (req, res, next) => {
+    try {
+
+        const savedPosts = await UserModel.find({ _id: req.userid }).populate("savedposts").sort({ createdAt: -1 })
+        if (savedPosts) {
+            res.status(200).json({ savedPosts })
+        } else {
+            res.status(403).json("No such savedPosts")
+        }
+    } catch (error) {
+        res.status(500).json(error)
+    }
 }
