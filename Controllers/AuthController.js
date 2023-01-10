@@ -96,17 +96,19 @@ export const googleuser = async (req, res, next) => {
     console.log("it is the backend of google login ")
     const email = req.body.email
     try {
-        const User = await UserModel.find({ email: email })
+        const User = await UserModel.findOne({ email: email })
         if (User) {
-            console.log("user already exist")
+            console.log(User,"user already exist")
+           
             const token = jwt.sign({
                 username: User.email, id: User._id
             },
                 process.env.JWT_KEY, { expiresIn: "23h" })
             res.status(200).json({ User, token })
-            console.log("tocken sented");
+            console.log("token sented");
 
         } else {
+            console.log("else part of google");
             const User = await new UserModel({
                 firstname: req.body.given_name,
                 lastname: req.body.family_name,
@@ -115,10 +117,12 @@ export const googleuser = async (req, res, next) => {
                 email_verified: req.body.email_verified,
                 password: "google"
             }).save()
+            console.log(User,"jwt");
             const token = jwt.sign({
-                username: User.email, id: User._id
-            },
+                username: User.email, id: User._id                
+            },            
                 process.env.JWT_KEY, { expiresIn: "23h" })
+                
             res.status(200).json({ User, token })
         }
         //  else {

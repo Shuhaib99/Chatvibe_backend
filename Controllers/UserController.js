@@ -26,7 +26,7 @@ export const getCurrentUserByID = async (req, res, next) => {
     console.log("looking for response from current user");
     try {
         const userid = req.userid
-
+        // console.log(userid,"currernt");
         const user = await UserModel.findById(userid)
         if (user)
             res.status(200).json({ user })
@@ -97,11 +97,11 @@ export const unFollowUser = async (req, res, next) => {
 
 export const getFollowers = async (req, res, next) => {
     try {
-        
+
         const followers = await UserModel.find({ _id: req.params.id }).populate("followers", "-password").sort({ createdAt: -1 })
         if (followers) {
             res.status(200).json({ followers })
-        }else{
+        } else {
             res.status(403).json("No such followers")
         }
     } catch (error) {
@@ -111,11 +111,11 @@ export const getFollowers = async (req, res, next) => {
 
 export const getFollowingUser = async (req, res, next) => {
     try {
-        
+
         const following = await UserModel.find({ _id: req.params.id }).populate("following", "-password").sort({ createdAt: -1 })
         if (following) {
             res.status(200).json({ following })
-        }else{
+        } else {
             res.status(403).json("No such following users")
         }
     } catch (error) {
@@ -141,4 +141,22 @@ export const updateUserProfile = async (req, res, next) => {
     } catch (error) {
         res.status(500).json(error)
     }
+}
+
+
+export const savePosts = async (req, res, next) => {
+
+    //     const id = req.body.postid
+    //     // const userid = req.userid
+
+    //     try {
+    //         const post = await UserModel.updateOne({
+    //             savedposts:[{$in:{id}},{
+    //                 savedposts:[{$push:{id}}]
+    //             }]
+    //         })
+
+    //     } catch (error) {
+    //         res.status(500).json(error)
+    //     }
 }
