@@ -10,6 +10,7 @@ import MessageRoute from './Routes/MessageRoute.js'
 import cors from 'cors'
 import morgan from 'morgan'
 
+
 //Routes
 const app = express();
 app.use(cors());

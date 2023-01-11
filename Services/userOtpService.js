@@ -1,16 +1,20 @@
 import nodeMailer from 'nodemailer'
 import dotenv from 'dotenv';
 
+dotenv.config()
+
 const transporter = nodeMailer.createTransport({
   service: "gmail",
   auth: {
+
     user: process.env.FROM_EMAIL,
     pass: process.env.FROM_PASSWORD
+
   },
-  
+
 });
 
-dotenv.config()
+
 export const sendOtp = (email) => {
   try {
     // console.log(email,"PORTER")
@@ -31,7 +35,7 @@ export const sendOtp = (email) => {
           resolve(response);
         })
         .catch((err) => {
-            console.log("ERROR OTP",err)
+          console.log("ERROR OTP", err)
           resolve(err);
         });
     }).catch((err) => {
