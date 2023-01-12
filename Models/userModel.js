@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const UserSchema = mongoose.Schema(
-    { 
+    {
         firstname: {
             type: String,
             required: true
@@ -20,14 +20,14 @@ const UserSchema = mongoose.Schema(
             type: String,
             required: true
         },
-       
+
         password: {
             type: String,
-            required:true
+            required: true
         },
 
-        email_verified:{
-            type:Boolean
+        email_verified: {
+            type: Boolean
         },
 
         isAdmin: {
@@ -36,15 +36,15 @@ const UserSchema = mongoose.Schema(
         },
 
         profilepic: String,
-        profilepicPubID:String,
+        profilepicPubID: String,
         coverpic: String,
-        coverpicPubID:String,
+        coverpicPubID: String,
         about: String,
         city: String,
 
         followers: [{
             type: mongoose.Schema.Types.ObjectId,
-                ref: "users"
+            ref: "users"
         }],
         following: [{
             type: mongoose.Schema.Types.ObjectId,
@@ -52,8 +52,12 @@ const UserSchema = mongoose.Schema(
         }],
         savedposts: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: "imageposts"
-        }]
+            ref: "imageposts",
+            createdAt:{
+                type: Date
+            }
+        }
+        ]
     },
     { timestamps: true }
 )

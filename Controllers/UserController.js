@@ -150,12 +150,24 @@ export const savePosts = async (req, res, next) => {
     const postid = mongoose.Types.ObjectId(req.body.postid)
     const userid = req.userid
     try {
-        const user = await UserModel.findById(userid)
-        if (!user.savedposts.includes(postid)) {
-            await user.updateOne({ $push: { savedposts: postid } })
-            res.status(200).json({success:"Successfully added" })
+        if (!req.body.savedpostdelete) {
+            console.log("savePost");
+            const user = await UserModel.findById(userid)
+            if (!user.savedposts.includes(postid)) {
+                await user.updateOne({ $push: { savedposts: postid } })
+                res.status(200).json({ success: "Successfully added" })
+            } else {
+                res.status(200).json({ success: "Posts exist" })
+            }
         }else{
-            res.status(200).json({success:"Posts exist"})
+            console.log("Delete davedPost");
+            const user = await UserModel.findById(userid)
+            if (user.savedposts.includes(postid)) {
+                await user.updateOne({ $pull: { savedposts: postid } })
+                res.status(200).json({ success: "Successfully Deleted" })
+            } else {
+                res.status(200).json({ success: "Post not found" })
+            }
         }
 
     } catch (error) {
@@ -166,7 +178,7 @@ export const savePosts = async (req, res, next) => {
 export const getSavedPosts = async (req, res, next) => {
     try {
 
-        const savedPosts = await UserModel.find({ _id: req.userid }).populate("savedposts").sort({ createdAt: -1 })
+        const savedPosts = await UserModel.find({ _id: req.userid }).populate({path:"savedposts", sort: { createdAt: -1 } })
         if (savedPosts) {
             res.status(200).json({ savedPosts })
         } else {
