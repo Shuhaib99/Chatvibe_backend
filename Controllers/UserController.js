@@ -159,7 +159,7 @@ export const savePosts = async (req, res, next) => {
             } else {
                 res.status(200).json({ success: "Posts exist" })
             }
-        }else{
+        } else {
             console.log("Delete davedPost");
             const user = await UserModel.findById(userid)
             if (user.savedposts.includes(postid)) {
@@ -178,7 +178,7 @@ export const savePosts = async (req, res, next) => {
 export const getSavedPosts = async (req, res, next) => {
     try {
 
-        const savedPosts = await UserModel.find({ _id: req.userid }).populate({path:"savedposts", sort: { createdAt: -1 } })
+        const savedPosts = await UserModel.find({ _id: req.userid }).populate({ path: "savedposts", sort: { createdAt: -1 } })
         if (savedPosts) {
             res.status(200).json({ savedPosts })
         } else {
@@ -186,5 +186,30 @@ export const getSavedPosts = async (req, res, next) => {
         }
     } catch (error) {
         res.status(500).json(error)
+    }
+}
+
+export const getUsers = async (req, res, next) => {
+    try {
+        console.log("inside getUsers");
+        const userId = mongoose.Types.ObjectId(req.userid);
+      
+        const searchResult = await UserModel.find({
+            $and: [
+                { _id: { $ne: userId } },
+                { firstname: new RegExp("^" + req.params.data, "i") },
+            ],
+        });
+
+        //firstname: new RegExp('^' + req.params.data, 'i')
+        if (searchResult) {
+            // console.log(userId,req.params.data.search,searchResult,"cvcvccvcvcccccv");
+            res.status(200).json(searchResult);
+        } else {
+            res.status(400).json({ message: "No results" });
+            throw new Error("No results");
+        }
+    } catch (error) {
+        console.log("error", error);
     }
 }
