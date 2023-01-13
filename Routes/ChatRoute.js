@@ -4,8 +4,8 @@ import verifyToken from "../Middleware/authMiddleware.js";
 
 const router = express.Router()
 
-router.post('/',verifyToken, createChat)
+router.post('/createChat',verifyToken, createChat)
 router.get('/userChats', verifyToken, userChats)
 router.get('/find/:firstid/:secondid', verifyToken, findChat)
 
-export default router 
+export default router

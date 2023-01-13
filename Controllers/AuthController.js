@@ -2,6 +2,7 @@ import UserModel from "../Models/userModel.js";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { sendOtp } from "../Services/userOtpService.js";
+import AdminModel from "../Models/admin.js";
 
 
 
@@ -56,6 +57,27 @@ export const registerUser = async (req, res) => {
         res.status(200).json({ user: false })
     }
 
+    
+        //..................admin creation......................
+
+        // const salt = await bcrypt.genSalt(10)
+        // const hashePass = await bcrypt.hash(req.body.password, salt)
+
+        // const newUser = new UserModel({
+           
+        //     email:req.body.email,
+        //     password: hashePass
+        // })
+
+        // try {
+        //     const admin = new AdminModel(newUser)
+        //     await admin.save()
+          
+        //     res.status(200).json(admin, "Admin saved")
+        // } catch (error) {
+        //     res.status(500).json({ message: error.message })
+        // }
+
 }
 
 
@@ -82,7 +104,7 @@ export const loginUser = async (req, res) => {
             res.status(404).json("User Not Found")
         }
     } catch (error) {
-        res.status(500).json({ message: error.message }, "error on req.body in loginUser AuthController")
+        res.status(500).json({ message: error.message }, "error on AuthController")
     }
 }
 
@@ -133,4 +155,30 @@ export const googleuser = async (req, res, next) => {
         res.status(500).json({ message: error.message })
     }
 
+}
+
+export const loginAdmin = async (req, res) => {
+    console.log(req.body,"Admin");
+    const { email, password } = req.body
+    try {
+        const admin = await AdminModel.findOne({ email: email })
+        if (admin) {
+            const validity = await bcrypt.compare(password, admin.password)
+
+            if (!validity) {
+                res.status(200).json({login_status:false})
+            } else {
+                const token = jwt.sign({
+                    username: admin.email, id: admin._id
+                }, process.env.JWT_KEY, { expiresIn: '23h' })
+                // console.log(user, token); 
+                res.status(200).json({ token })
+            }
+        }
+        else { 
+            res.status(200).json({login_status:false})
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message }, "error on AuthController")
+    }
 }

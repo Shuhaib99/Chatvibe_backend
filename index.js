@@ -7,6 +7,7 @@ import UserRoute from './Routes/UserRoute.js'
 import PostRoute from './Routes/PostRoute.js'
 import ChatRoute from './Routes/ChatRoute.js'
 import MessageRoute from './Routes/MessageRoute.js'
+import AdminRoute from './Routes/AdminRoute.js'
 import cors from 'cors'
 import morgan from 'morgan'
 
@@ -32,3 +33,5 @@ app.use('/user', UserRoute)
 app.use('/posts',PostRoute)
 app.use('/chat',ChatRoute)
 app.use('/message',MessageRoute)
+app.use('/super',AdminRoute)
+

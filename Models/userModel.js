@@ -30,11 +30,6 @@ const UserSchema = mongoose.Schema(
             type: Boolean
         },
 
-        isAdmin: {
-            type: Boolean,
-            default: false
-        },
-
         profilepic: String,
         profilepicPubID: String,
         coverpic: String,
