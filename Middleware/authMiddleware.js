@@ -10,7 +10,7 @@ const verifyToken = async (req, res, next) => {
 
         let authHeader = req.headers.authorization
         if (authHeader == undefined) {
-            //res.status(401).send({error:"No token provided"})
+            res.status(401).send({error:"No token provided"})
         } else {
             token = authHeader.split(" ")[1] //or pop()  
             // console.log("split token");

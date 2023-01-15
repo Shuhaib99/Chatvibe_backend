@@ -168,11 +168,11 @@ export const loginAdmin = async (req, res) => {
             if (!validity) {
                 res.status(200).json({login_status:false})
             } else {
-                const token = jwt.sign({
+                const adlog = jwt.sign({
                     username: admin.email, id: admin._id
                 }, process.env.JWT_KEY, { expiresIn: '23h' })
-                // console.log(user, token); 
-                res.status(200).json({ token })
+                // console.log(user, adlog); 
+                res.status(200).json({ adlog })
             }
         }
         else { 
