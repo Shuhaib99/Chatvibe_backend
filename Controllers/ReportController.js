@@ -23,7 +23,9 @@ export const addReport = async (req, res, next) => {
 
 export const getReport = async (req, res, next) => {
     try {
-        const report = await ReportModel.find().sort({ createdAt: -1 })
+        const report = await ReportModel.find().populate({ path: "userid", select: { 'firstname': 1, 'lastname': 1, "profilepic":1} })
+            .populate({ path: "postid", select: { 'userid': 1 }, populate: { path: "userid", select: { 'firstname': 1, "lastname": 1 ,"profilepic":1} } })
+            .sort({ createdAt: -1 })
         if (report) {
             res.status(200).json({ report })
         } else {

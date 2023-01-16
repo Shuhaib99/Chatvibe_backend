@@ -7,6 +7,6 @@ import verifyToken from "../Middleware/authMiddleware.js";
 const router =express.Router()
 
 router.post('/bySuper',loginAdmin)
-router.get('/getReport',verifyToken, getReport)
+router.get('/getReport', getReport)
 
 export default router;
