@@ -16,6 +16,9 @@ const ReportSchema = mongoose.Schema(
         reason:{
             type:String,
             required:true
+        },
+        report_action:{
+            type:Boolean           
         }
     },
     {

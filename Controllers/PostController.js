@@ -1,6 +1,7 @@
 
 import mongoose, { mongo, Mongoose } from "mongoose";
 import ImagePostModel from "../Models/imagePosts.js";
+import ReportModel from "../Models/ReportModel.js";
 import UserModel from "../Models/userModel.js";
 
 export const imagePost = async (req, res, next) => {
@@ -124,16 +125,20 @@ export const getPostsById = async (req, res, next) => {
 //     }
 // }
 
-export const deletePost = async (req,res,next) => {
-    console.log(req.body.postid,"deletion");
-    try {
-        return new Promise(async (resolve, reject) => {
+export const deletePost = async (req, res, next) => {
+    return new Promise(async (resolve, reject) => {
+        console.log(req.body.postid, "deletion");
+        try {
+
             await ImagePostModel.deleteOne({ _id: mongoose.Types.ObjectId(req.body.postid.postid) })
-            resolve({status : true})
-        })
+            if (req.body.postid.isSuper) {
+                console.log("isSuper");
+                await ReportModel.updateOne({ _id: mongoose.Types.ObjectId(req.body.postid.isSuper) }, { report_action: true })
+            }
+            resolve({ status: true })
 
-
-    } catch (error) {
-        res.status(500).json({ message: error.message })
-    }
-}
+        } catch (error) {
+           reject(error)
+        }
+    })
+} 
