@@ -199,8 +199,7 @@ export const getUsers = async (req, res, next) => {
                 { _id: { $ne: userId } },
                 { firstname: new RegExp("^" + req.params.data, "i") },
             ],
-        });
-
+        })
         //firstname: new RegExp('^' + req.params.data, 'i')
         if (searchResult) {
             // console.log(userId,req.params.data.search,searchResult,"cvcvccvcvcccccv");
@@ -210,6 +209,20 @@ export const getUsers = async (req, res, next) => {
             throw new Error("No results");
         }
     } catch (error) {
+        console.log("error", error);
+    }
+}
+
+export const getAllUsers = async (req,res,next) => {
+    try{
+        const users = await UserModel.find({},{firstname:1,lastname:1,profilepic:1,email:1, total_followers: { $size: "$followers" },total_following: { $size: "$following" }})
+        if(users){
+            res.status(200).json(users) 
+        }else{
+            res.status(200).json({isUsers:false})
+        }
+
+    }catch (error) {
         console.log("error", error);
     }
 }
