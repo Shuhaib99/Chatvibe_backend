@@ -157,7 +157,7 @@ export const savePosts = async (req, res, next) => {
                 await user.updateOne({ $push: { savedposts: postid } })
                 res.status(200).json({ success: "Successfully added" })
             } else {
-                res.status(200).json({ success: "Posts exist" })
+                res.status(200).json({ exist_post: true })
             }
         } else {
             console.log("Delete davedPost");
