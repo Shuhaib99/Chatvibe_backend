@@ -29,7 +29,9 @@ const UserSchema = mongoose.Schema(
         email_verified: {
             type: Boolean
         },
-
+        isBlock: {
+            type: Boolean
+        },
         profilepic: String,
         profilepicPubID: String,
         coverpic: String,

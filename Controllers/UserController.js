@@ -193,7 +193,7 @@ export const getUsers = async (req, res, next) => {
     try {
         console.log("inside getUsers");
         const userId = mongoose.Types.ObjectId(req.userid);
-      
+
         const searchResult = await UserModel.find({
             $and: [
                 { _id: { $ne: userId } },
@@ -213,16 +213,3 @@ export const getUsers = async (req, res, next) => {
     }
 }
 
-export const getAllUsers = async (req,res,next) => {
-    try{
-        const users = await UserModel.find({},{firstname:1,lastname:1,profilepic:1,email:1, total_followers: { $size: "$followers" },total_following: { $size: "$following" }})
-        if(users){
-            res.status(200).json(users) 
-        }else{
-            res.status(200).json({isUsers:false})
-        }
-
-    }catch (error) {
-        console.log("error", error);
-    }
-}
