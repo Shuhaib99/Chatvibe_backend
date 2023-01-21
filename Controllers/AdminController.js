@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import ReportModel from "../Models/ReportModel.js";
 import UserModel from "../Models/userModel.js";
 
 export const getAllUsers = async (req, res, next) => {
@@ -17,18 +18,17 @@ export const getAllUsers = async (req, res, next) => {
 
 
 export const blockUser = (req, res, next) => {
-
     return new Promise(async (resolve, reject) => {
-        console.log(req.body);
+      console.log(req.body);
         try {
-            if (req.body.isBlock) {
-                await UserModel.updateOne({ _id: mongoose.Types.ObjectId(req.body.userid) }, { isBlock: true })
-                resolve({ isBlock: true })
-                //res.json({ isBlock: true })
+            if (req.body.isBlock == false) {
+                await UserModel.updateOne({ _id: req.body.userid }, { isBlock: true })
+                //resolve({ isBlock: true })
+                  res.json({ isBlock: true })
             } else {
-                await UserModel.updateOne({ _id: mongoose.Types.ObjectId(req.body.userid) }, { isBlock: false })
-                resolve({ isBlock: false })
-                //res.json({ isBlock: false })
+                await UserModel.updateOne({ _id: req.body.userid }, { isBlock: false })
+                //resolve({ isBlock: false })
+                res.json({ isBlock: false })
             }
         } catch (error) {
             reject(error)
@@ -56,7 +56,7 @@ export const getReport = async (req, res, next) => {
 export const deleteReport = async (req, res, next) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(req.body.reportid, "Reportid");
+            // console.log(req.body.reportid, "Reportid");
             await ReportModel.deleteOne({ _id: mongoose.Types.ObjectId(req.body.reportid) })
             resolve({ delStatus: true })
 

@@ -57,26 +57,26 @@ export const registerUser = async (req, res) => {
         res.status(200).json({ user: false })
     }
 
-    
-        //..................admin creation......................
 
-        // const salt = await bcrypt.genSalt(10)
-        // const hashePass = await bcrypt.hash(req.body.password, salt)
+    //..................admin creation......................
 
-        // const newUser = new UserModel({
-           
-        //     email:req.body.email,
-        //     password: hashePass
-        // })
+    // const salt = await bcrypt.genSalt(10)
+    // const hashePass = await bcrypt.hash(req.body.password, salt)
 
-        // try {
-        //     const admin = new AdminModel(newUser)
-        //     await admin.save()
-          
-        //     res.status(200).json(admin, "Admin saved")
-        // } catch (error) {
-        //     res.status(500).json({ message: error.message })
-        // }
+    // const newUser = new UserModel({
+
+    //     email:req.body.email,
+    //     password: hashePass
+    // })
+
+    // try {
+    //     const admin = new AdminModel(newUser)
+    //     await admin.save()
+
+    //     res.status(200).json(admin, "Admin saved")
+    // } catch (error) {
+    //     res.status(500).json({ message: error.message })
+    // }
 
 }
 
@@ -88,16 +88,22 @@ export const loginUser = async (req, res) => {
     try {
         const user = await UserModel.findOne({ email: email })
         if (user) {
-            const validity = await bcrypt.compare(password, user.password)
+            console.log(user,"user");
+            if (!user?.isBlock) {
+                const validity = await bcrypt.compare(password, user.password)
 
-            if (!validity) {
-                res.status(400).json("Wrong Password")
-            } else {
-                const token = jwt.sign({
-                    username: user.email, id: user._id
-                }, process.env.JWT_KEY, { expiresIn: '23h' })
-                // console.log(user, token); 
-                res.status(200).json({ user, token })
+                if (!validity) {
+                    res.status(400).json("Wrong Password")
+                } else {
+                    const token = jwt.sign({
+                        username: user.email, id: user._id
+                    }, process.env.JWT_KEY, { expiresIn: '23h' })
+                    // console.log(user, token); 
+                    res.status(200).json({ user, token })
+                }
+            }
+            else{
+                res.status(200).json({isBlock:true })
             }
         }
         else {
@@ -120,8 +126,8 @@ export const googleuser = async (req, res, next) => {
     try {
         const User = await UserModel.findOne({ email: email })
         if (User) {
-            console.log(User,"user already exist")
-           
+            console.log(User, "user already exist")
+
             const token = jwt.sign({
                 username: User.email, id: User._id
             },
@@ -139,12 +145,12 @@ export const googleuser = async (req, res, next) => {
                 email_verified: req.body.email_verified,
                 password: "google"
             }).save()
-            console.log(User,"jwt");
+            console.log(User, "jwt");
             const token = jwt.sign({
-                username: User.email, id: User._id                
-            },            
+                username: User.email, id: User._id
+            },
                 process.env.JWT_KEY, { expiresIn: "23h" })
-                
+
             res.status(200).json({ User, token })
         }
         //  else {
@@ -158,7 +164,7 @@ export const googleuser = async (req, res, next) => {
 }
 
 export const loginAdmin = async (req, res) => {
-    console.log(req.body,"Admin");
+    console.log(req.body, "Admin");
     const { email, password } = req.body
     try {
         const admin = await AdminModel.findOne({ email: email })
@@ -166,7 +172,7 @@ export const loginAdmin = async (req, res) => {
             const validity = await bcrypt.compare(password, admin.password)
 
             if (!validity) {
-                res.status(200).json({login_status:false})
+                res.status(200).json({ login_status: false })
             } else {
                 const adlog = jwt.sign({
                     username: admin.email, id: admin._id
@@ -175,8 +181,8 @@ export const loginAdmin = async (req, res) => {
                 res.status(200).json({ adlog })
             }
         }
-        else { 
-            res.status(200).json({login_status:false})
+        else {
+            res.status(200).json({ login_status: false })
         }
     } catch (error) {
         res.status(500).json({ message: error.message }, "error on AuthController")
