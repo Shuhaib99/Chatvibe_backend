@@ -88,7 +88,7 @@ export const loginUser = async (req, res) => {
     try {
         const user = await UserModel.findOne({ email: email })
         if (user) {
-            console.log(user,"user");
+            //console.log(user, "user");
             if (!user?.isBlock) {
                 const validity = await bcrypt.compare(password, user.password)
 
@@ -102,12 +102,12 @@ export const loginUser = async (req, res) => {
                     res.status(200).json({ user, token })
                 }
             }
-            else{
-                res.status(200).json({isBlock:true })
+            else {
+                res.status(200).json({ isBlock: true })
             }
         }
         else {
-            res.status(404).json("User Not Found")
+            res.status(200).json({isUser:false})
         }
     } catch (error) {
         res.status(500).json({ message: error.message }, "error on AuthController")
@@ -126,14 +126,17 @@ export const googleuser = async (req, res, next) => {
     try {
         const User = await UserModel.findOne({ email: email })
         if (User) {
-            console.log(User, "user already exist")
-
-            const token = jwt.sign({
-                username: User.email, id: User._id
-            },
-                process.env.JWT_KEY, { expiresIn: "23h" })
-            res.status(200).json({ User, token })
-            console.log("token sented");
+            // console.log(User?.isBlock, "user already exist")
+            if (!User?.isBlock) {
+                const token = jwt.sign({
+                    username: User.email, id: User._id
+                },
+                    process.env.JWT_KEY, { expiresIn: "23h" })
+                res.status(200).json({ User, token })
+                console.log("token sented");
+            } else {
+                res.status(200).json({ isBlock: true })
+            }
 
         } else {
             console.log("else part of google");
