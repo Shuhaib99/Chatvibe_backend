@@ -99,7 +99,7 @@ export const loginUser = async (req, res) => {
                         username: user.email, id: user._id
                     }, process.env.JWT_KEY, { expiresIn: '23h' })
                     // console.log(user, token); 
-                    res.status(200).json({ user, token })
+                    res.status(200).json({ user, token,isUser:true })
                 }
             }
             else {
