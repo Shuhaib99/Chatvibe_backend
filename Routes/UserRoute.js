@@ -7,7 +7,7 @@ const router = express.Router()
 
 
 router.get('/userById:id',verifyToken, getUser)
-router.get('/getCurrentUser',verifyToken, getCurrentUserByID)
+router.get('/getCurrentUser/:isnotify',verifyToken, getCurrentUserByID)
 router.get('/getFollowers/:id',verifyToken, getFollowers)
 router.get('/getFollowingUser/:id',verifyToken, getFollowingUser)
 router.get('/getSavedPosts',verifyToken, getSavedPosts)

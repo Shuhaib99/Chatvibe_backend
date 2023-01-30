@@ -27,10 +27,16 @@ export const getCurrentUserByID = async (req, res, next) => {
     console.log("looking for response from current user");
     try {
         const userid = req.userid
-        // console.log(userid,"currernt");
-        const user = await UserModel.findById(userid,{password:0})
-        if (user)
-            res.status(200).json({ user })
+        let userdata
+        console.log(req.params.isnotify, "currernt");
+        if (req.params.isNotify == "Notification") {
+            userdata = await UserModel.findById(userid, { notification: 1 })
+            console.log(userdata, "userNotify");
+        } else {
+            userdata = await UserModel.findById(userid, { password: 0 ,notification:0})
+        }
+        if (userdata)
+            res.status(200).json({ user: userdata })
         else
             res.status(404).json("No User Exist")
 
@@ -213,15 +219,15 @@ export const getUsers = async (req, res, next) => {
     }
 }
 
-export const clearNotification = async (req,res) =>{
-    const id= req.userid
+export const clearNotification = async (req, res) => {
+    const id = req.userid
     console.log("reached in the clear notification");
     try {
         const notification = []
-        await UserModel.findByIdAndUpdate({ _id: id },{ notification :notification })
+        await UserModel.findByIdAndUpdate({ _id: id }, { notification: notification })
         res.status(200).json("Notification Cleared")
-        
+
     } catch (error) {
-        res.status(500).json({message:error.message})
+        res.status(500).json({ message: error.message })
     }
 }
