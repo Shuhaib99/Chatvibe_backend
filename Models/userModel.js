@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { object } from "yup";
 
 const UserSchema = mongoose.Schema(
     {
@@ -53,7 +54,9 @@ const UserSchema = mongoose.Schema(
             createdAt:{
                 type: Date
             }
-        }
+        }],
+        notification:[
+            { type:Object}
         ]
     },
     { timestamps: true }

@@ -1,5 +1,5 @@
 import express from "express";
-import { getUser,followUser,unFollowUser, updateUserProfile, getCurrentUserByID,getFollowers, getFollowingUser, getSavedPosts, getUsers } from "../Controllers/UserController.js";
+import { getUser,followUser,unFollowUser, updateUserProfile, getCurrentUserByID,getFollowers, getFollowingUser, getSavedPosts, getUsers, clearNotification } from "../Controllers/UserController.js";
 import verifyToken from "../Middleware/authMiddleware.js";
 
 
@@ -16,7 +16,7 @@ router.get('/getUsers/:data',verifyToken, getUsers)
 router.post('/follow',verifyToken, followUser)
 router.post('/unfollow',verifyToken, unFollowUser)
 router.post('/updateProfileImg',verifyToken, updateUserProfile)
-
+router.delete('/deleteNotification',verifyToken,clearNotification)
 
 
 // router.post('')

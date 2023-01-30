@@ -47,7 +47,6 @@ export const getPosts = async (req, res, next) => {
 
 
 export const likePost = async (req, res, next) => {
-
     const id = req.body.postid
     const userid = req.userid
 
@@ -57,6 +56,21 @@ export const likePost = async (req, res, next) => {
 
             await post.updateOne({ $push: { likes: userid } })
             const likes = post.likes
+            //notification
+            const user = await UserModel.findById(userid)
+            const notification = {
+                message: `${user.firstname} liked your post`,
+                profilepic: user.profilepic,
+                title: "Like",
+                time: Date.now(),
+                postpic: post.images,
+                postlink: post._id
+            }
+            if (userid != post.userid) {
+                
+                await UserModel.updateOne({ _id: post.userid }, { $push: { notification: notification } })
+                console.log("notification saved");
+            }
             res.json({ likes })
         }
         else {
@@ -79,7 +93,23 @@ export const commentPost = async (req, res, next) => {
     const comment = req.body.commentText
     try {
         await ImagePostModel.updateOne({ _id: postid }, { $push: { comments: { comment: comment, commentby: userid, createdAt: new Date() } } })
-        res.json({ status: true })
+        res.status(200).json({ status: true })
+        //notification
+        const user = await UserModel.findById(userid)
+        const notification = {
+            message: `${user.firstname} commented ${comment}`,
+            profilepic: user.profilepic,
+            title: "Comment",   
+            time: Date.now(),
+            postpic: post.images,
+            postlink: post._id
+        }
+
+
+        if (userid != post.userId) {
+            console.log("notification for comment saved");
+            await UserModel.findByIdAndUpdate({ _id: post.userId }, { $push: { notification: notification } })
+        }
     } catch (error) {
         console.log(error);
         res.status(500).json(error)
@@ -138,7 +168,7 @@ export const deletePost = async (req, res, next) => {
             resolve({ status: true })
 
         } catch (error) {
-           reject(error)
+            reject(error)
         }
     })
 } 

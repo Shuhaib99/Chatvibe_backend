@@ -28,7 +28,7 @@ export const getCurrentUserByID = async (req, res, next) => {
     try {
         const userid = req.userid
         // console.log(userid,"currernt");
-        const user = await UserModel.findById(userid)
+        const user = await UserModel.findById(userid,{password:0})
         if (user)
             res.status(200).json({ user })
         else
@@ -213,3 +213,15 @@ export const getUsers = async (req, res, next) => {
     }
 }
 
+export const clearNotification = async (req,res) =>{
+    const id= req.userid
+    console.log("reached in the clear notification");
+    try {
+        const notification = []
+        await UserModel.findByIdAndUpdate({ _id: id },{ notification :notification })
+        res.status(200).json("Notification Cleared")
+        
+    } catch (error) {
+        res.status(500).json({message:error.message})
+    }
+}
