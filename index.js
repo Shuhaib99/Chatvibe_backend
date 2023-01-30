@@ -32,7 +32,7 @@ app.use(
     cors({
         // origin: "http://localhost:3000",
         origin: ["https://chatwib.netlify.app", "http://localhost:3000"],
-        credentials:true
+        // credentials:true
     })
 );
 
