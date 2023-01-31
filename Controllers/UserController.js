@@ -27,16 +27,23 @@ export const getCurrentUserByID = async (req, res, next) => {
     console.log("looking for response from current user");
     try {
         const userid = req.userid
-        let userdata
-        console.log(req.params.isnotify, "currernt");
-        if (req.params.isNotify == "Notification") {
-            userdata = await UserModel.findById(userid, { notification: 1 })
-            console.log(userdata, "userNotify");
-        } else {
-            userdata = await UserModel.findById(userid, { password: 0 ,notification:0})
-        }
+        const userdata = await UserModel.findById(userid, { password: 0, notification: 0 })
         if (userdata)
             res.status(200).json({ user: userdata })
+        else
+            res.status(404).json("No User Exist")
+
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+export const getNotification = async (req, res, next) => {
+    try {
+        const userid = req.userid
+        const notification = await UserModel.findById(userid, { notification: 1 })
+        if (notification)
+            res.status(200).json({ notification })
         else
             res.status(404).json("No User Exist")
 
@@ -45,6 +52,7 @@ export const getCurrentUserByID = async (req, res, next) => {
         res.status(500).json({ message: error.message })
     }
 }
+
 
 
 export const followUser = async (req, res, next) => {

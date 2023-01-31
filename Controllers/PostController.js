@@ -66,15 +66,13 @@ export const likePost = async (req, res, next) => {
                 postpic: post.images,
                 postlink: post._id
             }
-            if (userid != post.userid) {
-                
+            if (userid != post.userid) {                
                 await UserModel.updateOne({ _id: post.userid }, { $push: { notification: notification } })
-                console.log("notification saved");
+                console.log("notification saved")
             }
             res.json({ likes })
         }
         else {
-
             await post.updateOne({ $pull: { likes: userid } })
             const likes = post.likes
             res.json({ likes })
@@ -92,6 +90,7 @@ export const commentPost = async (req, res, next) => {
     const userid = user
     const comment = req.body.commentText
     try {
+        const post = await ImagePostModel.findById(postid)
         await ImagePostModel.updateOne({ _id: postid }, { $push: { comments: { comment: comment, commentby: userid, createdAt: new Date() } } })
         res.status(200).json({ status: true })
         //notification
@@ -106,9 +105,9 @@ export const commentPost = async (req, res, next) => {
         }
 
 
-        if (userid != post.userId) {
+        if (userid != post.userId) {            
+            await UserModel.updateOne({ _id: post.userid }, { $push: { notification: notification } })
             console.log("notification for comment saved");
-            await UserModel.findByIdAndUpdate({ _id: post.userId }, { $push: { notification: notification } })
         }
     } catch (error) {
         console.log(error);
