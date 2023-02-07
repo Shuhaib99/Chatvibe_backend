@@ -14,7 +14,7 @@ export const createChat = async (req, res, next) => {
         if (!chat) {
             const result = await newChat.save()
             res.status(200).json({ result: result })
-        }else{
+        } else {
             res.status(200).json({ result: chat })
         }
     } catch (error) {
@@ -35,11 +35,10 @@ export const userChats = async (req, res, next) => {
 
 export const findChat = async (req, res, next) => {
     try {
-
         const chat = await ChatModel.findOne({
             members: { $all: [req.userid, req.params.secondId] }
         })
-        res.status(200).json(chat)
+        res.status(200).json({ chat: chat })
     } catch (error) {
         res.status(500).json(error)
     }

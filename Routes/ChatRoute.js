@@ -6,6 +6,6 @@ const router = express.Router()
 
 router.post('/createChat',verifyToken, createChat)
 router.get('/userChats', verifyToken, userChats)
-router.get('/find/:firstid/:secondid', verifyToken, findChat)
+router.get('/findchat/:secondId', verifyToken, findChat)
 
 export default router
