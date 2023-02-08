@@ -31,7 +31,8 @@ mongoose.connect(process.env.MONGO_DB, { useNewUrlParser: true, useUnifiedTopolo
 app.use(
     cors({
         // origin: "http://localhost:3000",
-        origin: ["https://chatwibe.netlify.app", "http://localhost:3000"],
+        // origin: ["https://chatwibe.netlify.app", "http://localhost:3000"],
+        origin: ["http://localhost:3000"]
         // credentials:true
     })
 );
@@ -50,7 +51,8 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
         // origin: "http://localhost:3000",
-        origin: ["https://chatwibe.netlify.app", "http://localhost:3000"],
+        // origin: ["https://chatwibe.netlify.app", "http://localhost:3000"],
+        origin: ["http://localhost:3000"]
     }
 })
 
