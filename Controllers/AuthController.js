@@ -104,7 +104,7 @@ export const loginUser = async (req, res) => {
             }
             else {
                 res.status(200).json({ isBlock: true })
-            }
+            } 
         }
         else {
             res.status(200).json({isUser:false})
